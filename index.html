@@ -19,7 +19,6 @@
       color: #fff;
     }
 
-    /* Subtelne wzorki w tle */
     body::before {
       content: "";
       position: absolute;
@@ -83,15 +82,11 @@
       border-radius: 12px;
       box-shadow: 0 0 25px rgba(0,0,0,0.6);
       overflow: hidden;
-      resize: both;
       display: flex;
       flex-direction: column;
       z-index: 1;
-    }
-
-    .window.dragging {
-      opacity: 0.85;
-      z-index: 2;
+      resize: none; /* domyślnie zablokowane */
+      pointer-events: auto;
     }
 
     .title-box {
@@ -99,10 +94,10 @@
       text-align: center;
       padding: 6px;
       background: #2a2b31;
-      cursor: move;
       user-select: none;
       color: #b6b6ff;
       border-bottom: 1px solid #3a3b41;
+      cursor: default; /* nie można przesuwać dopóki nie edytujemy */
     }
 
     iframe {
@@ -125,7 +120,6 @@
       width: 25%;
       height: 70%;
     }
-
   </style>
 </head>
 
@@ -138,51 +132,67 @@
   <div class="container">
     <div class="window" id="playerWin">
       <div class="title-box">🎥 Stream</div>
-      <iframe
-        src="https://player.twitch.tv/?channel=zytold&parent=vkamix11.github.io"
-        allowfullscreen>
-      </iframe>
+      <iframe src="https://player.twitch.tv/?channel=zytold&parent=vkamix11.github.io" allowfullscreen></iframe>
     </div>
 
     <div class="window" id="chatWin">
       <div class="title-box">💬 Chat</div>
-      <iframe
-        src="https://www.twitch.tv/embed/zytold/chat?parent=vkamix11.github.io">
-      </iframe>
+      <iframe src="https://www.twitch.tv/embed/zytold/chat?parent=vkamix11.github.io"></iframe>
     </div>
   </div>
 
   <script>
-    // Edycja układu
     const editBtn = document.getElementById("editBtn");
     let editMode = false;
 
+    const windows = document.querySelectorAll(".window");
+
+    // DOMYŚLNIE zabronione: brak dragging, brak resize
+    function disableEditing() {
+      windows.forEach(win => {
+        win.style.resize = "none";
+        win.querySelector(".title-box").style.cursor = "default";
+      });
+    }
+
+    // Włączenie edytora
+    function enableEditing() {
+      windows.forEach(win => {
+        win.style.resize = "both";
+        win.querySelector(".title-box").style.cursor = "move";
+      });
+    }
+
+    disableEditing(); // na start blokada ✅
+
     editBtn.addEventListener("click", () => {
       editMode = !editMode;
-      editBtn.textContent = editMode ? "✅ Zapisz układ" : "✏️ Edytor";
-      document.querySelectorAll(".window").forEach(win => {
-        win.style.resize = editMode ? "both" : "none";
-        win.querySelector(".title-box").style.cursor = editMode ? "move" : "default";
-      });
-      if (!editMode) saveLayout();
+      if (editMode) {
+        editBtn.textContent = "✅ Zapisz układ";
+        enableEditing();
+      } else {
+        editBtn.textContent = "✏️ Edytor";
+        disableEditing();
+        saveLayout();
+      }
     });
 
-    // Dragging windows
-    document.querySelectorAll(".window").forEach(win => {
+    // Dragging windows — działa tylko w trybie edycji
+    windows.forEach(win => {
       const title = win.querySelector(".title-box");
       let offsetX, offsetY, dragging = false;
 
       title.addEventListener("mousedown", e => {
         if (!editMode) return;
         dragging = true;
-        win.classList.add("dragging");
         offsetX = e.clientX - win.offsetLeft;
         offsetY = e.clientY - win.offsetTop;
+        win.style.opacity = "0.85";
       });
 
       document.addEventListener("mouseup", () => {
         dragging = false;
-        win.classList.remove("dragging");
+        windows.forEach(w => (w.style.opacity = "1"));
       });
 
       document.addEventListener("mousemove", e => {
@@ -193,10 +203,10 @@
       });
     });
 
-    // Zapisywanie layoutu
+    // zapisywanie layoutu
     function saveLayout() {
       const layout = {};
-      document.querySelectorAll(".window").forEach(win => {
+      windows.forEach(win => {
         layout[win.id] = {
           left: win.style.left,
           top: win.style.top,
@@ -207,7 +217,7 @@
       localStorage.setItem("zytoldLayout", JSON.stringify(layout));
     }
 
-    // Ładowanie layoutu
+    // ładowanie layoutu
     window.addEventListener("load", () => {
       const saved = localStorage.getItem("zytoldLayout");
       if (saved) {
@@ -226,3 +236,4 @@
   </script>
 </body>
 </html>
+
