@@ -3,67 +3,111 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Zytold — Alternate Twitch Player</title>
+    <title>Zytold Stream</title>
+
+    <!-- Ładna czcionka -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             margin: 0;
-            background: #0e0e10;
+            background: radial-gradient(circle at center, #141416, #0c0c0e);
             color: white;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        .container {
+            font-family: "Poppins", sans-serif;
             display: flex;
-            height: 100vh;
-            width: 100vw;
+            flex-direction: column;
+            align-items: center;
         }
-        .player {
-            flex: 3;
-            background: #18181b;
-        }
-        .chat {
-            flex: 1.2;
-            background: #1f1f23;
-            border-left: 2px solid #000;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+
         header {
-            position: absolute;
-            top: 10px;
-            left: 20px;
-            opacity: 0.8;
+            margin: 25px 0 10px;
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 0 0 15px #6e57ff;
         }
+
+        .wrapper {
+            display: flex;
+            gap: 20px;
+            width: 90%;
+            max-width: 1400px;
+            justify-content: center;
+        }
+
+        .card {
+            background: #1b1c20;
+            border-radius: 18px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+            padding: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #2a2b31;
+        }
+
+        .player-card {
+            flex: 3;
+            min-height: 60vh;
+        }
+
+        .chat-card {
+            flex: 1.2;
+            min-height: 60vh;
+        }
+
+        .title-box {
+            font-size: 22px;
+            font-weight: 500;
+            padding: 8px 0 15px;
+            text-align: center;
+            color: #b6b6ff;
+        }
+
+        iframe {
+            border: none;
+            width: 100%;
+            flex: 1;
+            border-radius: 12px;
+        }
+
         @media (max-width: 900px) {
-            .container {
+            .wrapper {
                 flex-direction: column;
+                width: 95%;
             }
-            .chat {
-                height: 50vh;
+            header {
+                font-size: 32px;
             }
         }
     </style>
 </head>
-<body>
-    <header>🎮 Alternate Player — <strong>Zytold</strong></header>
 
-    <div class="container">
-        <div class="player">
+<body>
+
+    <header>Zytold Live</header>
+
+    <div class="wrapper">
+
+        <div class="card player-card">
+            <div class="title-box">🎥 Stream</div>
             <iframe
                 src="https://player.twitch.tv/?channel=zytold&parent=vkamix11.github.io"
                 allowfullscreen>
             </iframe>
         </div>
 
-        <div class="chat">
+        <div class="card chat-card">
+            <div class="title-box">💬 Chat</div>
             <iframe
                 src="https://www.twitch.tv/embed/zytold/chat?parent=vkamix11.github.io">
             </iframe>
         </div>
+
     </div>
+
 </body>
 </html>
-
-
